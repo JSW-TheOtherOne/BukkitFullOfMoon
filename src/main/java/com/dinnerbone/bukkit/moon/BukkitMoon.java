@@ -1,11 +1,8 @@
-
 package com.dinnerbone.bukkit.moon;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,15 +20,7 @@ public class BukkitMoon extends JavaPlugin {
         System.out.println( desc.getName() + " version " + desc.getVersion() + " is enabled!" );
 
         getCommand("moon").setExecutor(new MoonCommandExec());
-    }
-    
-    public boolean anonymousCheck(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Cannot execute that command, I don't know who you are!");
-            return true;
-        } else {
-            return false;
-        }
+        getCommand("earth").setExecutor(new WorldCommandExec());
     }
 
     public static World getMoon() {

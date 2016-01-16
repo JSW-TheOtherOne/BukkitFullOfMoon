@@ -9,3 +9,6 @@ commands:
   moon:
     description: Sends you to the moon!
     usage: /moon
+  earth:
+    description: Go back to earth!
+    usage: /earth
