@@ -1,5 +1,5 @@
 
-package com.dinnerbone.bukkit.moon;
+package com.dinnerbone.bukkit.moon.terrain;
 
 import java.util.Random;
 import org.bukkit.Chunk;
