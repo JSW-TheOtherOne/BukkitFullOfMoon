@@ -1,4 +1,4 @@
-# BukkitFullOfMoon
+# BukkitFullOfMoon [![Build Status](https://travis-ci.org/javipepe/BukkitFullOfMoon.svg?branch=master)](https://travis-ci.org/javipepe/BukkitFullOfMoon)
 Custom generator example for Bukkit. Originally done by Dinnerbone; 1.7+ compatibility, /earth command and moon gravity by Javipepe. This plugin will let you go to the moon and come back, featuring random terrain generation, craters and flags!
 
 Commands:
