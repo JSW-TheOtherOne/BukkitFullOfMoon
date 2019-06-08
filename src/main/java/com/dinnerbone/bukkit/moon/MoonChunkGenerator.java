@@ -1,12 +1,12 @@
 package com.dinnerbone.bukkit.moon;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.NoiseGenerator;
@@ -26,25 +26,26 @@ public class MoonChunkGenerator extends ChunkGenerator {
 		NoiseGenerator gen = getGenerator(world);
 		double result = gen.noise(x, y);
 		result *= variance;
-		return NoiseGenerator.floor(result);
+		return 0;//NoiseGenerator.floor(result); 
 	}
-
+	
 	@Override
-	public ChunkGenerator.ChunkData generateChunkData(World world, Random random, int cx, int cz, ChunkGenerator.BiomeGrid biome) {
+	public ChunkData generateChunkData(World world, Random random, int cx, int cz, ChunkGenerator.BiomeGrid biome) {
 		// Create the chunk data from method
-		ChunkGenerator.ChunkData data = this.createChunkData(world);
-		// Loop through each X and Z value
+		ChunkData data = this.createChunkData(world);
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
 				int height = this.getHeight(world, cx + (x * 0.0625), cz + (z * 0.625), 2) + 60;
-				// Loop through each Y value in the column
 				for (int y = 0; y < height; y++) {
-					// Set the block to be stone if more than 5 blocks down from the surface
-					if (y < (height - 5)) {
-						data.setBlock(x, y, z, Material.STONE);
+					if (y == 0) {
+						data.setBlock(x, y, z, Material.BEDROCK);
 					} else {
-						data.setBlock(x, y, z, Material.GRAVEL);
+						if (y <= 2 && random.nextBoolean() && random.nextBoolean() && random.nextBoolean()) {
+							data.setBlock(x, y, z, Material.BEDROCK);
+						} else {
+							data.setBlock(x, y, z, Material.END_STONE);}
 					}
+					biome.setBiome(x, z, Biome.DESERT);
 				}
 			}
 		}
@@ -53,7 +54,11 @@ public class MoonChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public List<BlockPopulator> getDefaultPopulators(World world) {
-		return Arrays.asList((BlockPopulator)new MoonCraterPopulator(), new FlagPopulator());
+	if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateCraters"))
+		world.getPopulators().add(new MoonCraterPopulator());
+	if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateFlags"))	
+		world.getPopulators().add(new FlagPopulator());
+		return world.getPopulators();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
-<project name="BukkitSamplePlugin" default="dist" basedir=".">
-	<property name="pluginname" value="BukkitSamplePlugin"/>
-	<property name="bukkit.jar" location="../Bukkit/dist/Bukkit.jar"/>
+<project name="BukkitMoonPlugin" default="dist" basedir=".">
+	<property name="pluginname" value="BukkitFullOfMoon"/>
+	<property name="bukkitmoon_1.13.0.jar" location="../Bukkit/dist/Bukkitmoon1.13.0.jar"/>
 	<property name="plugins" location="../../plugins/"/>
 
 	<property name="src" location="src"/>

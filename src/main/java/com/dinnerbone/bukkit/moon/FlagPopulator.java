@@ -13,15 +13,15 @@ import org.bukkit.generator.BlockPopulator;
 
 public class FlagPopulator extends BlockPopulator {
 	// TODO: Put these in a config
-	private static final int FLAG_CHANCE = 1; 	// Out of 200
-	private static final int FLAG_HEIGHT = 3; 	// Fence post height
+	private static final int FLAG_CHANCE = 1; // Out of 200
+	private static final int FLAG_HEIGHT = 3; // Fence post height
 
 	@Override
 	public void populate(World world, Random random, Chunk source) {
 		if (random.nextInt(200) <= FLAG_CHANCE) {
 			// Create random X/Y in world coords
-			int centerX = (source.getX() << 4) + random.nextInt(16);
-			int centerZ = (source.getZ() << 4) + random.nextInt(16);
+			int centerX = (source.getX() << 4) + random.nextInt(15);
+			int centerZ = (source.getZ() << 4) + random.nextInt(15);
 			int centerY = world.getHighestBlockYAt(centerX, centerZ);
 			BlockFace direction = null;
 			Block top = null;
@@ -45,7 +45,7 @@ public class FlagPopulator extends BlockPopulator {
 			// Create the fence post
 			for (int y = centerY; y < centerY + FLAG_HEIGHT; y++) {
 				top = world.getBlockAt(centerX, y, centerZ);
-				top.setType(Material.FENCE);
+				top.setType(Material.OAK_FENCE);
 			}
 
 			// Create a sign in the direction
@@ -55,8 +55,8 @@ public class FlagPopulator extends BlockPopulator {
 
 			// Set the sign data
 			if (state instanceof Sign) {
-				Sign sign = (Sign)state;
-				org.bukkit.material.Sign data = (org.bukkit.material.Sign)state.getData();
+				Sign sign = (Sign) state;
+				org.bukkit.material.Sign data = (org.bukkit.material.Sign) state.getData();
 
 				data.setFacingDirection(direction);
 				sign.setLine(0, "---------|*****");

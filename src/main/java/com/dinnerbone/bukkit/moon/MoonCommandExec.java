@@ -10,11 +10,13 @@ public class MoonCommandExec implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		// Must be a player to teleport to world
 		if (sender instanceof Player) {
-			Player player = (Player)sender;
+			Player player = (Player) sender;
 			player.teleport(BukkitMoon.getMoon().getSpawnLocation());
 		} else {
 			sender.sendMessage("You must be a player to execute this command!");
 		}
 		return true;
 	}
+	
+	
 }
