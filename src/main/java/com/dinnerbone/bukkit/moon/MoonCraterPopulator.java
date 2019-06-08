@@ -1,6 +1,6 @@
 package com.dinnerbone.bukkit.moon;
 
-package com.dinnerbone.bukkit.moon.terrain;
+package com.dinnerbone.bukkit.moon;
 
 import java.util.ArrayList;
 import java.util.Collections;

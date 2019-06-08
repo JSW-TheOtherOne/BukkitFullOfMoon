@@ -1,15 +1,19 @@
 package com.dinnerbone.bukkit.moon;
 
+<<<<<<< HEAD
 import com.dinnerbone.bukkit.moon.MoonUtils;
 
 import com.dinnerbone.bukkit.moon.command.MoonCommandExec;
 import com.dinnerbone.bukkit.moon.command.WorldCommandExec;
 import com.dinnerbone.bukkit.moon.terrain.MoonChunkGenerator;
 
+=======
+>>>>>>> parent of 6100076... Add moon gravity, organize plugin files
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+<<<<<<< HEAD
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,12 +23,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+=======
+>>>>>>> parent of 6100076... Add moon gravity, organize plugin files
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffectType;
 
 public class BukkitMoon extends JavaPlugin {
+<<<<<<< HEAD
 	private final static String WORLD_NAME = "Bukkit_Moon";
 	private static World moon = null;
 	static FileConfiguration config;
@@ -93,6 +99,8 @@ public class BukkitMoon extends JavaPlugin {
 	}
 
 public class BukkitMoon extends JavaPlugin implements Listener {
+=======
+>>>>>>> parent of 6100076... Add moon gravity, organize plugin files
     private final static String WORLD_NAME = "BukkitMoon";
     private static World moon = null;
 
@@ -106,7 +114,6 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 
         getCommand("moon").setExecutor(new MoonCommandExec());
         getCommand("earth").setExecutor(new WorldCommandExec());
-        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     public static World getMoon() {
@@ -124,13 +131,5 @@ public class BukkitMoon extends JavaPlugin implements Listener {
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new MoonChunkGenerator();
-    }
-
-    @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
-        if(MoonCommandExec.getWorldCache().containsKey(event.getEntity())) {
-            MoonCommandExec.getWorldCache().remove(event.getEntity());
-            event.getEntity().removePotionEffect(PotionEffectType.JUMP);
-        }
     }
 }
