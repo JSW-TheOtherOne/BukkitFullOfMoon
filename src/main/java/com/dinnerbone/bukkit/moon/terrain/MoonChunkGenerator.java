@@ -1,5 +1,7 @@
 package com.dinnerbone.bukkit.moon;
 
+package com.dinnerbone.bukkit.moon.terrain;
+
 import java.util.List;
 import java.util.Random;
 
@@ -13,7 +15,26 @@ import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 public class MoonChunkGenerator extends ChunkGenerator {
-	private NoiseGenerator generator;
+    private NoiseGenerator generator;
+
+    private NoiseGenerator getGenerator(World world) {
+        if (generator == null) {
+            generator = new SimplexNoiseGenerator(world);
+        }
+
+        return generator;
+    }
+
+    private int getHeight(World world, double x, double y, int variance) {
+        NoiseGenerator gen = getGenerator(world);
+
+        double result = gen.noise(x, y);
+        result *= variance;
+        return NoiseGenerator.floor(result);
+    }
+
+    public byte[] generate(World world, Random random, int cx, int cz) {
+        byte[] result = new byte[32768];
 
 	private NoiseGenerator getGenerator(World world) {
 		if (generator == null) {
