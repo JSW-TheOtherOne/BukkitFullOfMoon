@@ -34,6 +34,8 @@ public class BukkitMoon extends JavaPlugin {
 	static int MIN_CRATER_SIZE;
 	static int SMALL_CRATER_SIZE;
 	static int BIG_CRATER_SIZE;
+	static int noiseVariance;
+	static int subDivitions;
 	
 	@Override
 	public void onDisable() {
@@ -45,11 +47,15 @@ public class BukkitMoon extends JavaPlugin {
 		saveDefaultConfig();
 		//Get the config file
 		config = this.getConfig();
+		noiseVariance = config.getInt("TerrainGeneration.NOISE_VARIANCE");
+		subDivitions = config.getInt("TerrainGeneration.SUB_DIVITIONS");
 		CRATER_CHANCE = config.getInt("ConfigCraters.CRATER_CHANCE");
 		BIG_CRATER_CHANCE = config.getInt("ConfigCraters.BIG_CRATER_CHANCE");
 		MIN_CRATER_SIZE = config.getInt("ConfigCraters.MIN_CRATER_SIZE");
 		SMALL_CRATER_SIZE = config.getInt("ConfigCraters.SMALL_CRATER_SIZE");
 		BIG_CRATER_SIZE = config.getInt("ConfigCraters.BIG_CRATER_SIZE");
+
+		if (subDivitions != 1 && subDivitions != 2 && subDivitions != 4) subDivitions=1;
 		if (CRATER_CHANCE < 1) CRATER_CHANCE = 1;
 		if (CRATER_CHANCE > 100) CRATER_CHANCE = 100;
 		if (BIG_CRATER_CHANCE < 1) BIG_CRATER_CHANCE = 1;

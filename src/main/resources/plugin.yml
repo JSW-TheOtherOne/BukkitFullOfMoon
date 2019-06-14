@@ -1,7 +1,7 @@
 name: BukkitFullOfMoon
 main: com.dinnerbone.bukkit.moon.BukkitMoon
 version: 1.13.0
-api-version: 1.13.2
+api-version: 1.13
 website: http://www.dinnerbone.com
 author: Dinnerbone - Updated by JSMW
 description: Sample custom world generator for Bukkit
