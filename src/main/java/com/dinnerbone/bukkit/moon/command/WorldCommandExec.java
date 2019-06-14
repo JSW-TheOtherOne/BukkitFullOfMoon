@@ -1,11 +1,12 @@
-package com.dinnerbone.bukkit.moon;
+package com.dinnerbone.bukkit.moon.command;
 
-import com.dinnerbone.bukkit.moon.MoonCommandExec;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * @author Javi
@@ -18,6 +19,8 @@ public class WorldCommandExec implements CommandExecutor {
             //get player's old world and teleport
             if(MoonCommandExec.getWorldCache().containsKey(player)) {
                 player.teleport(MoonCommandExec.getWorldCache().get(player).getSpawnLocation());
+                //back to earths normal gravity
+                player.removePotionEffect(PotionEffectType.JUMP);
                 MoonCommandExec.getWorldCache().remove(player);
                 return true;
             } else {

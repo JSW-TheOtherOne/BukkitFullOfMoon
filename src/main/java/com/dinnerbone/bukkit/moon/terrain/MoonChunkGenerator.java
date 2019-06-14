@@ -1,9 +1,10 @@
 package com.dinnerbone.bukkit.moon;
 
-package com.dinnerbone.bukkit.moon;
+package com.dinnerbone.bukkit.moon.terrain;
 
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,7 +32,7 @@ public class MoonChunkGenerator extends ChunkGenerator {
         result *= variance;
         return NoiseGenerator.floor(result);
     }
-    
+
     public byte[] generate(World world, Random random, int cx, int cz) {
         byte[] result = new byte[32768];
 

@@ -1,10 +1,7 @@
 
 package com.dinnerbone.bukkit.moon;
-<<<<<<< HEAD:src/main/java/com/dinnerbone/bukkit/moon/terrain/FlagPopulator.java
 
 package com.dinnerbone.bukkit.moon.terrain;
-=======
->>>>>>> parent of 6100076... Add moon gravity, organize plugin files:src/main/java/com/dinnerbone/bukkit/moon/FlagPopulator.java
 
 import java.util.Random;
 
