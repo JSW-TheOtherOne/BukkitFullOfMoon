@@ -1,5 +1,3 @@
-package com.dinnerbone.bukkit.moon;
-
 package com.dinnerbone.bukkit.moon.terrain;
 
 import java.util.List;
@@ -13,6 +11,7 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
+import com.dinnerbone.bukkit.moon.BukkitMoon;
 
 public class MoonChunkGenerator extends ChunkGenerator {
     private NoiseGenerator generator;
@@ -21,27 +20,8 @@ public class MoonChunkGenerator extends ChunkGenerator {
         if (generator == null) {
             generator = new SimplexNoiseGenerator(world);
         }
-
         return generator;
     }
-
-    private int getHeight(World world, double x, double y, int variance) {
-        NoiseGenerator gen = getGenerator(world);
-
-        double result = gen.noise(x, y);
-        result *= variance;
-        return NoiseGenerator.floor(result);
-    }
-
-    public byte[] generate(World world, Random random, int cx, int cz) {
-        byte[] result = new byte[32768];
-
-	private NoiseGenerator getGenerator(World world) {
-		if (generator == null) {
-			generator = new SimplexNoiseGenerator(world);
-		}
-		return generator;
-	}
 
 	private int getHeight(World world, double x, double y, int variance) {
 		NoiseGenerator gen = getGenerator(world);
@@ -77,7 +57,7 @@ public class MoonChunkGenerator extends ChunkGenerator {
 		int currentZ;
 		int currentZend;
 		
-		int subDivide = BukkitMoon.subDivitions;
+		int subDivide = BukkitMoon.getSubDivitions();
 		int xOff = 0;
 		int zOff = 0;
 
@@ -131,7 +111,7 @@ public class MoonChunkGenerator extends ChunkGenerator {
 				for (int loop02 = 0; loop02 < 2; loop02++){
 					for (int loopXZ = xzStart; (xzEnd >= xzStart ? loopXZ <= xzEnd : loopXZ >= xzEnd); loopXZ = loopXZ+diRection) {
 						if (loopChunk==exitLoop && loop01==1 && ((loop02==0 && loopXZ == (exitLoop-1)) || (loop02==1)))break;
-						int height = this.getHeight(world, cx + (xzArray[0] * 0.0625), cz + (xzArray[1] * 0.625), BukkitMoon.noiseVariance) + 60;
+						int height = this.getHeight(world, cx + (xzArray[0] * 0.0625), cz + (xzArray[1] * 0.625), BukkitMoon.getNoiseVariance()) + 60;
 						xzArray[whichXZ] = loopXZ;
 						for (int y = 0; y <= height; y++) {
 							if (y == 0) {
@@ -167,10 +147,10 @@ public class MoonChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public List<BlockPopulator> getDefaultPopulators(World world) {
-	if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateCraters"))
-		world.getPopulators().add(new MoonCraterPopulator());
-	if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateFlags"))	
-		world.getPopulators().add(new FlagPopulator());
+		if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateCraters"))
+			world.getPopulators().add(new MoonCraterPopulator());
+		if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateFlags"))	
+			world.getPopulators().add(new FlagPopulator());
 		return world.getPopulators();
 	}
 

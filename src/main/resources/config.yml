@@ -13,7 +13,7 @@ BlockPopulators:
 ConfigCraters:
   CRATER_CHANCE: 45			#Out of 100, default 45
   BIG_CRATER_CHANCE: 10		#Out of 100, default 10
-  MIN_CRATER_SIZE: 3		#Set to 3, config does nothing
+  MIN_CRATER_SIZE: 3		#Between 2 and 4
   SMALL_CRATER_SIZE: 8		#With upper bound of 8, will be set to +1 of MIN_CRATER_SIZE if less entered
   BIG_CRATER_SIZE: 16	 	#With upper bound of 16(for now), will be set to +1 of SMALL_CRATER_SIZE if less entered
 

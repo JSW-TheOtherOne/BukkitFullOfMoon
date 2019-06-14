@@ -5,14 +5,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 /**
  * @author Javi
  */
 public class WorldCommandExec implements CommandExecutor {
-
+	
+	@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player)sender;
@@ -28,7 +28,7 @@ public class WorldCommandExec implements CommandExecutor {
             }
 
         } else {
-            sender.sendMessage("I don't know who you are!");
+            sender.sendMessage("You must be a player to execute this command!");
         }
 
         return true;

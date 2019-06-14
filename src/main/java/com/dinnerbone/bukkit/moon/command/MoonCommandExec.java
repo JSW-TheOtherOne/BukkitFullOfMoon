@@ -16,8 +16,10 @@ import java.util.Map;
 
 public class MoonCommandExec implements CommandExecutor {
     private static Map<Player, World> worlds = new HashMap<>();
-
+    
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    	// Must be a player to teleport to world
         if (sender instanceof Player) {
             Player player = (Player)sender;
             //cache old world
@@ -31,7 +33,7 @@ public class MoonCommandExec implements CommandExecutor {
             //gravity
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, Double.valueOf(2.66).intValue(), false));
         } else {
-            sender.sendMessage("I don't know who you are!");
+            sender.sendMessage("You must be a player to execute this command!");
         }
 
         return true;
