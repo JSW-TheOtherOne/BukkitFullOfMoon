@@ -1,46 +1,135 @@
-
 package com.dinnerbone.bukkit.moon;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
-import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
 
 public class MoonCraterPopulator extends BlockPopulator {
-    private static final int CRATER_CHANCE = 45; // Out of 100
-    private static final int MIN_CRATER_SIZE = 3;
-    private static final int SMALL_CRATER_SIZE = 8;
-    private static final int BIG_CRATER_SIZE = 16;
-    private static final int BIG_CRATER_CHANCE = 10; // Out of 100
+	// Returns a random integer within the bounds (inclusive)
+	private int randInt(Random random, int hi, int lo) {
+		return random.nextInt(hi - lo + 1) + lo;
+	}
 
-    public void populate(World world, Random random, Chunk source) {
-        if (random.nextInt(100) <= CRATER_CHANCE) {
-            int centerX = (source.getX() << 4) + random.nextInt(16);
-            int centerZ = (source.getZ() << 4) + random.nextInt(16);
-            int centerY = world.getHighestBlockYAt(centerX, centerZ);
-            Vector center = new BlockVector(centerX, centerY, centerZ);
-            int radius = 0;
+/**
+* @author JSW-TheOtherOne
+*/
+	@Override
+	public void populate(World world, Random random, Chunk chunk) {
+		//Decide to create a crater or not
+		if (random.nextInt(100) <= BukkitMoon.CRATER_CHANCE) {
+			int cx = chunk.getX();
+			int cz = chunk.getZ();
+			// Create random radius
+			int radius = 0;
+			if (random.nextInt(100) <= BukkitMoon.BIG_CRATER_CHANCE) {
+				radius = this.randInt(random, BukkitMoon.BIG_CRATER_SIZE, BukkitMoon.SMALL_CRATER_SIZE)/2;
+			} else {
+				radius = this.randInt(random, BukkitMoon.SMALL_CRATER_SIZE, BukkitMoon.MIN_CRATER_SIZE)/2;
+			}
+			radius = radius--;
+			// Create random X/Z position in safe coords
+			int centreX = (cx << 4) + random.nextInt(15);
+			int centreZ = (cz << 4) + random.nextInt(15);
+			int centreY = world.getHighestBlockYAt(centreX, centreZ);
+			ArrayList<Integer> centreBlock = new ArrayList<Integer>();
+			centreBlock.add(centreX);
+			centreBlock.add(centreY);
+			centreBlock.add(centreZ);
+			// Loop through all the X and Z and Y (local)
+			for (int x = -radius; x <= radius; x++) {
+				for (int z = -radius; z <= radius; z++) {
+					//Is this block loaded?
+					int cxCheck = (centreX + x) >> 4;
+					int czCheck = (centreZ + z) >> 4;
+					if (world.isChunkLoaded(cxCheck, czCheck)) {
+						//Find highest block in column
+						int highestY = world.getHighestBlockYAt(centreX+x, centreZ+z);
+						highestY = highestY - centreY;
+						for (int y = -radius; y <= highestY ; y++) {
+							ArrayList<Integer> positionBlock = new ArrayList<Integer>();
+							positionBlock.add(centreBlock.get(0) + x);
+							positionBlock.add(centreBlock.get(1) + y);
+							positionBlock.add(centreBlock.get(2) + z);
+							// Check radius
+							int XX = positionBlock.get(0);
+							int YY = positionBlock.get(1);
+							int ZZ = positionBlock.get(2);
+							Block block = world.getBlockAt(XX,YY,ZZ);
+							Double checkBlock = MoonUtils.distanceArray(centreBlock,positionBlock);
+							if ((checkBlock <= (radius + 0.5)||YY>centreY) && block.getType().equals(Material.END_STONE)) {
+								block.setType(Material.AIR);
+							}
+						}
+					}
+				}
+			}
+			//create a rim
+			if (BukkitMoon.craterRim && radius >= 5) {
+				CreaterRim(centreBlock, radius, chunk, world);
+			}
+		}
+	}
 
-            if (random.nextInt(100) <= BIG_CRATER_CHANCE) {
-                radius = random.nextInt(BIG_CRATER_SIZE - MIN_CRATER_SIZE + 1) + MIN_CRATER_SIZE;
-            } else {
-                radius = random.nextInt(SMALL_CRATER_SIZE - MIN_CRATER_SIZE + 1) + MIN_CRATER_SIZE;
-            }
-
-            for (int x = -radius; x <= radius; x++) {
-                for (int y = -radius; y <= radius; y++) {
-                    for (int z = -radius; z <= radius; z++) {
-                        Vector position = center.clone().add(new Vector(x, y, z));
-
-                        if (center.distance(position) <= radius + 0.5) {
-                            world.getBlockAt(position.toLocation(world)).setType(Material.AIR);
-                        }
-                    }
-                }
-            }
-        }
-    }
+/**
+* @author JSW-TheOtherOne
+*/
+	private void CreaterRim(List<Integer> centreBlock, int rad, Chunk chunk, World world) {
+		int XX = centreBlock.get(0);
+		int YY = centreBlock.get(1);
+		int ZZ = centreBlock.get(2);
+		int rim = rad+1;
+		
+		Integer[] xzArray = null;
+		xzArray = new Integer[2];
+		for (int doThree = 0; doThree < 3; doThree++) {
+			rim = rad+1+doThree;
+			for (int loopRim = 0; loopRim < 4; loopRim++) {
+				int xORz = 0;
+				switch(loopRim) {
+				case 0:
+					xORz = 0;
+					xzArray[0] = XX;
+					xzArray[1] = ZZ - rim;
+					break;
+				case 1:
+					xORz = 0;
+					xzArray[0] = XX;
+					xzArray[1] = ZZ + rim;
+					break;
+				case 2:
+					xORz = 1;
+					xzArray[0] = XX - rim;
+					xzArray[1] = ZZ;
+					break;
+				case 3:
+					xORz = 1;
+					xzArray[0] = XX + rim;
+					xzArray[1] = ZZ;
+	        	break;
+				}
+				int centreXZ = xzArray[xORz];
+				for (int xz = -rim; xz < rim; xz++) {
+					xzArray[xORz] = centreXZ + xz;
+					int cx = xzArray[0] >> 4;
+					int cz = xzArray[1] >> 4;
+					if (world.isChunkLoaded(cx, cz)) {
+						int heightYY = YY;
+						if (doThree == 1) heightYY = heightYY+1;
+						if (world.getHighestBlockYAt(xzArray[0], xzArray[1]) >= YY) {
+							for (int loopYY = world.getHighestBlockYAt(xzArray[0], xzArray[1]); loopYY <= heightYY; loopYY++) {
+								Block block = world.getBlockAt(xzArray[0],loopYY,xzArray[1]);
+								if (block.getType().equals(Material.AIR)) block.setType(Material.END_STONE);	
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
