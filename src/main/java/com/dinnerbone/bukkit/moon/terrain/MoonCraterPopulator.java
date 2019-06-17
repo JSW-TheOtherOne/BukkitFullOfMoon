@@ -1,4 +1,4 @@
-package com.dinnerbone.bukkit.moon;
+package com.dinnerbone.bukkit.moon.terrain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
+
+import com.dinnerbone.bukkit.moon.BukkitMoon;
+import com.dinnerbone.bukkit.moon.MoonUtils;
 
 public class MoonCraterPopulator extends BlockPopulator {
 	// Returns a random integer within the bounds (inclusive)
@@ -27,10 +30,10 @@ public class MoonCraterPopulator extends BlockPopulator {
 			int cz = chunk.getZ();
 			// Create random radius
 			int radius = 0;
-			if (random.nextInt(100) <= BukkitMoon.BIG_CRATER_CHANCE) {
-				radius = this.randInt(random, BukkitMoon.BIG_CRATER_SIZE, BukkitMoon.SMALL_CRATER_SIZE)/2;
+			if (random.nextInt(100) <= BukkitMoon.getBigCraterChance()) {
+				radius = this.randInt(random, BukkitMoon.getBigCraterSize(), BukkitMoon.getSmallCraterSize())/2;
 			} else {
-				radius = this.randInt(random, BukkitMoon.SMALL_CRATER_SIZE, BukkitMoon.MIN_CRATER_SIZE)/2;
+				radius = this.randInt(random, BukkitMoon.getSmallCraterSize(), BukkitMoon.getMinCraterSize())/2;
 			}
 			radius = radius--;
 			// Create random X/Z position in safe coords
@@ -111,7 +114,7 @@ public class MoonCraterPopulator extends BlockPopulator {
 					xORz = 1;
 					xzArray[0] = XX + rim;
 					xzArray[1] = ZZ;
-	        	break;
+					break;
 				}
 				int centreXZ = xzArray[xORz];
 				for (int xz = -rim; xz < rim; xz++) {

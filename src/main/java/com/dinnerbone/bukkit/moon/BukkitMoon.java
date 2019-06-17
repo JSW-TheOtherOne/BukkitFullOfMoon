@@ -2,29 +2,40 @@ package com.dinnerbone.bukkit.moon;
 
 import com.dinnerbone.bukkit.moon.MoonUtils;
 
+import com.dinnerbone.bukkit.moon.command.MoonCommandExec;
+import com.dinnerbone.bukkit.moon.command.WorldCommandExec;
+import com.dinnerbone.bukkit.moon.terrain.MoonChunkGenerator;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 
-public class BukkitMoon extends JavaPlugin {
-	private final static String WORLD_NAME = "Bukkit_Moon";
+public class BukkitMoon extends JavaPlugin implements Listener {
+	private final static String moon_Name = "Bukkit_Moon";
 	private static World moon = null;
-	static FileConfiguration config;
+	public static FileConfiguration config;
 
-	static int CRATER_CHANCE;
-	static int BIG_CRATER_CHANCE;
-	static int MIN_CRATER_SIZE;
-	static int SMALL_CRATER_SIZE;
-	static int BIG_CRATER_SIZE;
-	static int noiseVariance;
-	static int subDivitions;
+	private static int craterChance;
+	private static int bigCraterChance;
+	private static int minCraterSize;
+	private static int smallCraterSize;
+	private static int bigCraterSize;
+	private static int noiseVariance;
+	private static int subDivitions;
 	static double noiseScale;
 	static boolean craterRim;
 	
@@ -32,40 +43,49 @@ public class BukkitMoon extends JavaPlugin {
 	public void onDisable() {
 		MoonUtils.log(ChatColor.RED,"Stopping BukkitMoon Generator");
 	}
-
+    
 	@Override
 	public void onEnable() {
 		saveDefaultConfig();
 		//Get the config file
-		config = this.getConfig();
-		noiseVariance = config.getInt("TerrainGeneration.NOISE_VARIANCE");
-		subDivitions = config.getInt("TerrainGeneration.SUB_DIVITIONS");
+		setPluginConfig(this.getConfig());
+		setNoiseVariance(getConfig().getInt("TerrainGeneration.NOISE_VARIANCE"));
+		setSubDivitions(getConfig().getInt("TerrainGeneration.SUB_DIVITIONS"));
+		setCraterChance(getConfig().getInt("ConfigCraters.CRATER_CHANCE"));
+		setBigCraterChance(getConfig().getInt("ConfigCraters.BIG_CRATER_CHANCE"));
+		setMinCraterSize(getConfig().getInt("ConfigCraters.MIN_CRATER_SIZE"));
+		setSmallCraterSize(getConfig().getInt("ConfigCraters.SMALL_CRATER_SIZE"));
+		setBigCraterSize(getConfig().getInt("ConfigCraters.BIG_CRATER_SIZE"));
+
 		noiseScale = config.getInt("TerrainGeneration.NOISE_SCALE");
-		CRATER_CHANCE = config.getInt("ConfigCraters.CRATER_CHANCE");
-		BIG_CRATER_CHANCE = config.getInt("ConfigCraters.BIG_CRATER_CHANCE");
-		MIN_CRATER_SIZE = config.getInt("ConfigCraters.MIN_CRATER_SIZE");
-		SMALL_CRATER_SIZE = config.getInt("ConfigCraters.SMALL_CRATER_SIZE");
-		BIG_CRATER_SIZE = config.getInt("ConfigCraters.BIG_CRATER_SIZE");
 		craterRim = config.getBoolean("ConfigCraters.RIM_OR_NOT_TO_RIM");
-
-		if (subDivitions != 1 && subDivitions != 2 && subDivitions != 4) subDivitions=1;
-		if (CRATER_CHANCE < 1) CRATER_CHANCE = 1;
-		if (CRATER_CHANCE > 100) CRATER_CHANCE = 100;
-		if (BIG_CRATER_CHANCE < 1) BIG_CRATER_CHANCE = 1;
-		if (BIG_CRATER_CHANCE > 100) BIG_CRATER_CHANCE = 100;
-		if (MIN_CRATER_SIZE < 1) MIN_CRATER_SIZE = 1;
-		if (MIN_CRATER_SIZE > 7) MIN_CRATER_SIZE = 7;
-		if (SMALL_CRATER_SIZE <= MIN_CRATER_SIZE) SMALL_CRATER_SIZE = MIN_CRATER_SIZE + 1;
-		if (SMALL_CRATER_SIZE > 6) SMALL_CRATER_SIZE = 6;
-		if (BIG_CRATER_SIZE <= SMALL_CRATER_SIZE) BIG_CRATER_SIZE = SMALL_CRATER_SIZE + 1;
-		if (BIG_CRATER_SIZE > 16) BIG_CRATER_SIZE =16;
 		//TO DO get list of moon worlds (config.getString("BukkitMoonWorlds")
-
-		getCommand("moon").setExecutor(new MoonCommandExec());
+		
 		// Log Enabled
 		PluginDescriptionFile desc = this.getDescription();
-		MoonUtils.log(ChatColor.GREEN, desc.getName() + " version " + desc.getVersion() + " is enabled!");
+
+        getCommand("moon").setExecutor(new MoonCommandExec());
+        getCommand("earth").setExecutor(new WorldCommandExec());
+        Bukkit.getPluginManager().registerEvents(this, this);
+        
+		MoonUtils.log(ChatColor.GREEN, desc.getName() + " version " + desc.getVersion() + " is enabled!"); 
+    }
+
+	 public static World getMoon() {
+		 if (moon == null) {
+			 WorldCreator wCreator = new WorldCreator(moon_Name);
+			 wCreator.environment(World.Environment.NORMAL);
+			 wCreator.generator(new MoonChunkGenerator());
+			 
+			moon = Bukkit.getServer().createWorld(wCreator);
+		 }
+		 return moon;
 	}
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        return new MoonChunkGenerator();
+    }
 
 	 public boolean anonymousCheck(CommandSender sender) {
 		 if (!(sender instanceof Player)) {
@@ -75,20 +95,87 @@ public class BukkitMoon extends JavaPlugin {
 			 return false;
 		 }
 	 }
+	 
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        if(MoonCommandExec.getWorldCache().containsKey(event.getEntity())) {
+            MoonCommandExec.getWorldCache().remove(event.getEntity());
+            event.getEntity().removePotionEffect(PotionEffectType.JUMP);
+        }
+    }
 
-	 public static World getMoon() {
-		 if (moon == null) {
-			 WorldCreator creator = new WorldCreator(WORLD_NAME);
-			 creator.environment(World.Environment.NORMAL);
-			 creator.generator(new MoonChunkGenerator());
-			moon = Bukkit.getServer().createWorld(creator);
-		 }
-		 return moon;
+    //Get the config file settings and check if valid
+	public static int getSubDivitions() {
+		return subDivitions;
 	}
 
-	@Override
-	public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-		return new MoonChunkGenerator();
+	public static void setSubDivitions(int subDivitions) {
+		if (subDivitions != 1 && subDivitions != 2 && subDivitions != 4) subDivitions = 1;
+		BukkitMoon.subDivitions = subDivitions;
 	}
 
+	public static int getNoiseVariance() {
+		return noiseVariance;
+	}
+
+	public static void setNoiseVariance(int noiseVariance) {
+		BukkitMoon.noiseVariance = noiseVariance;
+	}
+
+	public static void setPluginConfig(FileConfiguration config) {
+		BukkitMoon.config = config;
+	}
+	public FileConfiguration getPluginConfig() {
+		return config;
+	}
+
+	public static int getCraterChance() {
+		return craterChance;
+	}
+
+	public static void setCraterChance(int cRATER_CHANCE) {
+		if (cRATER_CHANCE < 1) cRATER_CHANCE = 1;
+		if (cRATER_CHANCE > 100) cRATER_CHANCE = 100;
+		craterChance = cRATER_CHANCE;
+	}
+
+	public static int getBigCraterChance() {
+		return bigCraterChance;
+	}
+
+	public static void setBigCraterChance(int bIG_CRATER_CHANCE) {
+		if (bIG_CRATER_CHANCE < 1) bIG_CRATER_CHANCE = 1;
+		if (bIG_CRATER_CHANCE > 100) bIG_CRATER_CHANCE = 100;
+		bigCraterChance = bIG_CRATER_CHANCE;
+	}
+
+	public static int getBigCraterSize() {
+		return bigCraterSize;
+	}
+
+	public static void setBigCraterSize(int bIG_CRATER_SIZE) {
+		if (bIG_CRATER_SIZE <= getSmallCraterSize()) bIG_CRATER_SIZE = (getSmallCraterSize() + 1);
+		if (bIG_CRATER_SIZE > 16) bIG_CRATER_SIZE = 16;
+		bigCraterSize = bIG_CRATER_SIZE;
+	}
+
+	public static int getSmallCraterSize() {
+		return smallCraterSize;
+	}
+
+	public static void setSmallCraterSize(int sMALL_CRATER_SIZE) {
+		if (sMALL_CRATER_SIZE <= getMinCraterSize()) sMALL_CRATER_SIZE = (getMinCraterSize() + 1);
+		if (sMALL_CRATER_SIZE > 8) sMALL_CRATER_SIZE = 8;
+		smallCraterSize = sMALL_CRATER_SIZE;
+	}
+
+	public static int getMinCraterSize() {
+		return minCraterSize;
+	}
+
+	public static void setMinCraterSize(int mIN_CRATER_SIZE) {
+		if (mIN_CRATER_SIZE < 2) mIN_CRATER_SIZE = 2;
+		if (mIN_CRATER_SIZE > 4) mIN_CRATER_SIZE = 4;
+		minCraterSize = mIN_CRATER_SIZE;
+	}
 }

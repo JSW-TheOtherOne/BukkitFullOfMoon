@@ -1,4 +1,4 @@
-package com.dinnerbone.bukkit.moon;
+package com.dinnerbone.bukkit.moon.terrain;
 
 import java.util.List;
 import java.util.Random;
@@ -11,22 +11,23 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
+import com.dinnerbone.bukkit.moon.BukkitMoon;
 
 public class MoonChunkGenerator extends ChunkGenerator {
-	private NoiseGenerator generator;
+    private NoiseGenerator generator;
 
-	private NoiseGenerator getGenerator(World world) {
-		if (generator == null) {
-			generator = new SimplexNoiseGenerator(world);
-		}
-		return generator;
-	}
+    private NoiseGenerator getGenerator(World world) {
+        if (generator == null) {
+            generator = new SimplexNoiseGenerator(world);
+        }
+        return generator;
+    }
 
 	private int getHeight(World world, double x, double y, int variance) {
 		NoiseGenerator gen = getGenerator(world);
 		double result = gen.noise(x, y);
 		result *= variance;
-		return NoiseGenerator.floor(result);//0;// 
+		return NoiseGenerator.floor(result); 
 	}
 	
 /**
@@ -56,7 +57,7 @@ public class MoonChunkGenerator extends ChunkGenerator {
 		int currentZ;
 		int currentZend;
 		
-		int subDivide = BukkitMoon.subDivitions;
+		int subDivide = BukkitMoon.getSubDivitions();
 		int xOff = 0;
 		int zOff = 0;
 
@@ -146,10 +147,10 @@ public class MoonChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public List<BlockPopulator> getDefaultPopulators(World world) {
-	if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateCraters"))
-		world.getPopulators().add(new MoonCraterPopulator());
-	if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateFlags"))	
-		world.getPopulators().add(new FlagPopulator());
+		if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateCraters"))
+			world.getPopulators().add(new MoonCraterPopulator());
+		if (BukkitMoon.config.getBoolean("BlockPopulators.GenerateFlags"))	
+			world.getPopulators().add(new FlagPopulator());
 		return world.getPopulators();
 	}
 
