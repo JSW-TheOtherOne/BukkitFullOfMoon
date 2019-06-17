@@ -26,7 +26,7 @@ public class MoonChunkGenerator extends ChunkGenerator {
 		NoiseGenerator gen = getGenerator(world);
 		double result = gen.noise(x, y);
 		result *= variance;
-		return NoiseGenerator.floor(result);// 0;//
+		return NoiseGenerator.floor(result);//0;// 
 	}
 	
 /**
@@ -106,11 +106,11 @@ public class MoonChunkGenerator extends ChunkGenerator {
 				xzArray[whichXZ] = xzStart;
 				xzEnd = currentXend;
 				xzArray[1] = currentZ;
-
+				
 				for (int loop02 = 0; loop02 < 2; loop02++){
 					for (int loopXZ = xzStart; (xzEnd >= xzStart ? loopXZ <= xzEnd : loopXZ >= xzEnd); loopXZ = loopXZ+diRection) {
 						if (loopChunk==exitLoop && loop01==1 && ((loop02==0 && loopXZ == (exitLoop-1)) || (loop02==1)))break;
-						int height = this.getHeight(world, cx + (xzArray[0] * 0.0625), cz + (xzArray[1] * 0.625), BukkitMoon.noiseVariance) + 60;
+						int height = this.getHeight(world, cx + (xzArray[0] * 0.0625), cz + (xzArray[1] * 0.0625), BukkitMoon.noiseVariance) + 60;
 						xzArray[whichXZ] = loopXZ;
 						for (int y = 0; y <= height; y++) {
 							if (y == 0) {

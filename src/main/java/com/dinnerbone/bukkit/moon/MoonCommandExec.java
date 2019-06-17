@@ -17,6 +17,4 @@ public class MoonCommandExec implements CommandExecutor {
 		}
 		return true;
 	}
-	
-	
 }
