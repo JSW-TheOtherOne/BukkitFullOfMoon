@@ -36,7 +36,9 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 	private static int bigCraterSize;
 	private static int noiseVariance;
 	private static int subDivitions;
-
+	static double noiseScale;
+	static boolean craterRim;
+	
 	@Override
 	public void onDisable() {
 		MoonUtils.log(ChatColor.RED,"Stopping BukkitMoon Generator");
@@ -54,6 +56,9 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 		setMinCraterSize(getConfig().getInt("ConfigCraters.MIN_CRATER_SIZE"));
 		setSmallCraterSize(getConfig().getInt("ConfigCraters.SMALL_CRATER_SIZE"));
 		setBigCraterSize(getConfig().getInt("ConfigCraters.BIG_CRATER_SIZE"));
+
+		noiseScale = config.getInt("TerrainGeneration.NOISE_SCALE");
+		craterRim = config.getBoolean("ConfigCraters.RIM_OR_NOT_TO_RIM");
 		//TO DO get list of moon worlds (config.getString("BukkitMoonWorlds")
 		
 		// Log Enabled
