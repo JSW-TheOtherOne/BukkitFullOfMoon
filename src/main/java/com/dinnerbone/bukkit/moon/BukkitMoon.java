@@ -3,6 +3,7 @@ package com.dinnerbone.bukkit.moon;
 import com.dinnerbone.bukkit.moon.MoonUtils;
 
 import com.dinnerbone.bukkit.moon.command.MoonCommandExec;
+import com.dinnerbone.bukkit.moon.command.ReloadConfigExec;
 import com.dinnerbone.bukkit.moon.command.WorldCommandExec;
 import com.dinnerbone.bukkit.moon.terrain.MoonChunkGenerator;
 
@@ -26,6 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class BukkitMoon extends JavaPlugin implements Listener {
 	private final static String moon_Name = "Bukkit_Moon";
+    public static JavaPlugin plugin = null;
 	private static World moon = null;
 	public static FileConfiguration config;
 
@@ -36,8 +38,8 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 	private static int bigCraterSize;
 	private static int noiseVariance;
 	private static int subDivitions;
-	static double noiseScale;
-	static boolean craterRim;
+	private static double noiseScale;
+	private static boolean craterRim;
 	
 	@Override
 	public void onDisable() {
@@ -46,19 +48,10 @@ public class BukkitMoon extends JavaPlugin implements Listener {
     
 	@Override
 	public void onEnable() {
+        plugin = this;
 		saveDefaultConfig();
 		//Get the config file
-		setPluginConfig(this.getConfig());
-		setNoiseVariance(getConfig().getInt("TerrainGeneration.NOISE_VARIANCE"));
-		setSubDivitions(getConfig().getInt("TerrainGeneration.SUB_DIVITIONS"));
-		setCraterChance(getConfig().getInt("ConfigCraters.CRATER_CHANCE"));
-		setBigCraterChance(getConfig().getInt("ConfigCraters.BIG_CRATER_CHANCE"));
-		setMinCraterSize(getConfig().getInt("ConfigCraters.MIN_CRATER_SIZE"));
-		setSmallCraterSize(getConfig().getInt("ConfigCraters.SMALL_CRATER_SIZE"));
-		setBigCraterSize(getConfig().getInt("ConfigCraters.BIG_CRATER_SIZE"));
-
-		noiseScale = config.getInt("TerrainGeneration.NOISE_SCALE");
-		craterRim = config.getBoolean("ConfigCraters.RIM_OR_NOT_TO_RIM");
+        setPluginConfig(plugin.getConfig());
 		//TO DO get list of moon worlds (config.getString("BukkitMoonWorlds")
 		
 		// Log Enabled
@@ -66,6 +59,7 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 
         getCommand("moon").setExecutor(new MoonCommandExec());
         getCommand("earth").setExecutor(new WorldCommandExec());
+        getCommand("BMreload").setExecutor(new ReloadConfigExec());
         Bukkit.getPluginManager().registerEvents(this, this);
         
 		MoonUtils.log(ChatColor.GREEN, desc.getName() + " version " + desc.getVersion() + " is enabled!"); 
@@ -105,6 +99,24 @@ public class BukkitMoon extends JavaPlugin implements Listener {
     }
 
     //Get the config file settings and check if valid
+    public static void setPluginConfig(FileConfiguration config) {
+		BukkitMoon.config = config;
+        setNoiseVariance(plugin.getConfig().getInt("TerrainGeneration.NOISE_VARIANCE"));
+        setNoiseScale(plugin.getConfig().getInt("TerrainGeneration.NOISE_SCALE"));
+		setSubDivitions(plugin.getConfig().getInt("TerrainGeneration.SUB_DIVITIONS"));
+		setCraterChance(plugin.getConfig().getInt("ConfigCraters.CRATER_CHANCE"));
+		setBigCraterChance(plugin.getConfig().getInt("ConfigCraters.BIG_CRATER_CHANCE"));
+		setMinCraterSize(plugin.getConfig().getInt("ConfigCraters.MIN_CRATER_SIZE"));
+		setSmallCraterSize(plugin.getConfig().getInt("ConfigCraters.SMALL_CRATER_SIZE"));
+		setBigCraterSize(plugin.getConfig().getInt("ConfigCraters.BIG_CRATER_SIZE"));
+		setCraterRim(plugin.getConfig().getBoolean("ConfigCraters.RIM_OR_NOT_TO_RIM"));
+		Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW+ "BukkitMoon Plugin Config Loaded.");
+	}
+
+	public FileConfiguration getPluginConfig() {
+		return config;
+	}
+    
 	public static int getSubDivitions() {
 		return subDivitions;
 	}
@@ -121,12 +133,9 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 	public static void setNoiseVariance(int noiseVariance) {
 		BukkitMoon.noiseVariance = noiseVariance;
 	}
-
-	public static void setPluginConfig(FileConfiguration config) {
-		BukkitMoon.config = config;
-	}
-	public FileConfiguration getPluginConfig() {
-		return config;
+	
+	private static void setNoiseScale(double noiseScale) {
+		BukkitMoon.noiseScale = noiseScale;
 	}
 
 	public static int getCraterChance() {
@@ -177,5 +186,13 @@ public class BukkitMoon extends JavaPlugin implements Listener {
 		if (mIN_CRATER_SIZE < 2) mIN_CRATER_SIZE = 2;
 		if (mIN_CRATER_SIZE > 4) mIN_CRATER_SIZE = 4;
 		minCraterSize = mIN_CRATER_SIZE;
+	}
+
+	public static boolean getCraterRim() {
+		return craterRim;
+	}
+
+	public static void setCraterRim(boolean craterRim) {
+		BukkitMoon.craterRim = craterRim;
 	}
 }

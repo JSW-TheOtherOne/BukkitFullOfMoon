@@ -5,7 +5,7 @@
 	
 	<groupId>org.bukkit</groupId>
 	<artifactId>BukkitMoon</artifactId>
-	<version>1.13.0</version>
+	<version>1.13.5</version>
 	<name>BukkitFullOfMoon</name>
 	<url>http://www.bukkit.org</url>
 	

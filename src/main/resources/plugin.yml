@@ -1,10 +1,10 @@
 name: BukkitFullOfMoon
 main: com.dinnerbone.bukkit.moon.BukkitMoon
-version: 1.13.0
+version: 1.13.5
 api-version: 1.13
 website: http://www.dinnerbone.com
-author: Dinnerbone - Updated by JSMW
-description: Sample custom world generator for Bukkit
+author: Dinnerbone - Updated to 1.13.2/1.14.2 by JSW-TheOtherOne
+description: From a Sample custom world generator for Bukkit
 load: startup
 commands:
   moon:
@@ -13,3 +13,6 @@ commands:
   earth:
     description: Go back to earth!
     usage: /earth
+  BMreload:
+    description: Reloads the config file
+    usage: /BMreload

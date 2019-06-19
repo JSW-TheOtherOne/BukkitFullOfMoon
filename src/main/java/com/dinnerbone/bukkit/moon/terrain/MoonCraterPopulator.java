@@ -25,7 +25,7 @@ public class MoonCraterPopulator extends BlockPopulator {
 	@Override
 	public void populate(World world, Random random, Chunk chunk) {
 		//Decide to create a crater or not
-		if (random.nextInt(100) <= BukkitMoon.CRATER_CHANCE) {
+		if (random.nextInt(100) <= BukkitMoon.getCraterChance()) {
 			int cx = chunk.getX();
 			int cz = chunk.getZ();
 			// Create random radius
@@ -73,7 +73,7 @@ public class MoonCraterPopulator extends BlockPopulator {
 				}
 			}
 			//create a rim
-			if (BukkitMoon.craterRim && radius >= 5) {
+			if (BukkitMoon.getCraterRim() && radius >= 5) {
 				CreaterRim(centreBlock, radius, chunk, world);
 			}
 		}
