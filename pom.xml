@@ -5,11 +5,11 @@
 	
 	<groupId>org.bukkit</groupId>
 	<artifactId>BukkitMoon</artifactId>
-	<version>1.13.5</version>
+	<version>1.14.0</version>
 	<name>BukkitFullOfMoon</name>
 	<url>http://www.bukkit.org</url>
 	
-    <description>BukkitFullOfMoon generator plugin updated for 1.13.2</description>
+    <description>BukkitFullOfMoon generator plugin updated for 1.14.2</description>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
+			<version>1.14.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
